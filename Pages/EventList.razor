@@ -1,0 +1,29 @@
+@page "/events"
+@using EventEase.Data
+@using EventEase.Components
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@inject EventService EventService
+
+<h2>Upcoming Events</h2>
+
+<!-- Virtualized event list for performance with large datasets -->
+<div class="event-list-container">
+    <Virtualize Items="@events" Context="evt">
+        <!-- Each event links to its details page -->
+        <a href="/eventdetails/@evt.Id" style="text-decoration:none;">
+            <EventCard Name="@evt.Name" Date="@evt.Date" Location="@evt.Location" />
+        </a>
+    </Virtualize>
+</div>
+
+@code
+{
+    // List of events to display
+    private List<Event> events = new();
+
+    // On initialization, fetch all events from the service
+    protected override void OnInitialized()
+    {
+        events = EventService.GetEvents();
+    }
+}

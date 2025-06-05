@@ -1,0 +1,46 @@
+﻿<!--
+    Navigation menu for EventEase.
+    Contains links to Home and Events pages.
+-->
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Event Ease</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass nav-scrollable">
+    <nav class="nav flex-column" aria-label="Main navigation">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/events">
+                <span class="bi bi-calendar-event-fill-nav-menu" aria-hidden="true"></span> Events
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/attendance">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> My Attendance
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@code {
+    // Tracks whether the nav menu is collapsed (for mobile)
+    private bool collapseNavMenu = true;
+
+    // Returns the CSS class for collapsing the nav menu
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    // Toggles the nav menu open/closed
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

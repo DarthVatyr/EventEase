@@ -1,0 +1,24 @@
+<!--
+    Displays a single event's summary.
+    Handles missing/invalid data gracefully.
+-->
+<div class="event-card">
+    <h3>@(string.IsNullOrWhiteSpace(Name) ? "Unnamed Event" : Name)</h3>
+    <div class="event-details">
+        <span class="event-date">
+            @(Date == default ? "Date TBD" : Date.ToString("MMMM dd, yyyy"))
+        </span>
+        <span class="event-location">
+            @(string.IsNullOrWhiteSpace(Location) ? "Location TBD" : Location)
+        </span>
+    </div>
+</div>
+
+@code {
+    // Event name (nullable)
+    [Parameter] public string? Name { get; set; }
+    // Event date
+    [Parameter] public DateTime Date { get; set; }
+    // Event location (nullable)
+    [Parameter] public string? Location { get; set; }
+}

@@ -1,0 +1,42 @@
+@page "/attendance"
+@using EventEase.Data
+@inject EventService EventService
+@inject UserSessionService UserSessionService
+
+<PageTitle>My Attendance</PageTitle>
+
+@code {
+    private List<(Event Event, string Registrant)> registeredEvents = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UserSessionService.LoadAsync();
+        registeredEvents = UserSessionService.GetRegisteredEvents()
+            .Select(pair => (Event: EventService.GetEventById(pair.Key), Registrant: pair.Value))
+            .Where(x => x.Event != null)
+            .ToList()!;
+    }
+}
+
+<div class="event-details-card">
+    <h3>My Registered Events</h3>
+    @if (registeredEvents.Count == 0)
+    {
+        <p>You have not registered for any events yet.</p>
+    }
+    else
+    {
+        <ul>
+            @foreach (var item in registeredEvents)
+            {
+                <li>
+                    <strong>@item.Event!.Name</strong>
+                    &mdash; @item.Event.Date.ToString("MMMM dd, yyyy") at @item.Event.Location
+                    <br />
+                    <span style="color:#888;">Registered as: <b>@item.Registrant</b></span>
+                </li>
+            }
+        </ul>
+    }
+    <a href="/events" class="btn btn-secondary" style="margin-top:1rem;">Back to Events</a>
+</div>

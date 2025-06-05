@@ -1,0 +1,94 @@
+@page "/register/{EventId:int}"
+@using EventEase.Data
+@using Microsoft.AspNetCore.Components.Forms
+@using System.ComponentModel.DataAnnotations
+@inject EventService EventService
+@inject UserSessionService UserSessionService
+
+@code {
+    // The event ID from the route parameter
+    [Parameter] public int EventId { get; set; }
+
+    // The registration form model
+    private RegistrationModel registration = new();
+
+    // Tracks if the form was successfully submitted
+    private bool submitted = false;
+
+    // Holds the event info for the given EventId
+    private Event? eventInfo;
+
+    // On component initialization, fetch the event and pre-fill the event name
+    protected override async Task OnInitializedAsync()
+    {
+        await UserSessionService.LoadAsync();
+        eventInfo = EventService.GetEventById(EventId);
+
+        if (eventInfo != null)
+        {
+            registration.EventName = eventInfo.Name;
+        }
+    }
+
+    // Called when the form is valid and submitted
+    private async Task HandleValidSubmit()
+    {
+        await UserSessionService.RegisterEventAsync(EventId, registration.Name ?? "");
+        submitted = true;
+    }
+
+    // The registration form data model with validation attributes
+    public class RegistrationModel
+    {
+        [Required(ErrorMessage = "Name is required")]
+        public string? Name { get; set; }
+
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid email address")]
+        public string? Email { get; set; }
+
+        public string? EventName { get; set; }
+    }
+}
+
+@* Render the registration form if the event exists and hasn't been submitted *@
+@if (eventInfo is not null && !submitted)
+{
+    <div class="registration-card">
+        <h3>Event Registration</h3>
+        <EditForm Model="@registration" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div>
+                <label>Name:</label>
+                <InputText @bind-Value="registration.Name" />
+                <ValidationMessage For="@(() => registration.Name)" />
+            </div>
+            <div>
+                <label>Email:</label>
+                <InputText @bind-Value="registration.Email" />
+                <ValidationMessage For="@(() => registration.Email)" />
+            </div>
+            <div>
+                <label>Event:</label>
+                <InputText @bind-Value="registration.EventName" Disabled="true" />
+            </div>
+            <button type="submit">Register</button>
+        </EditForm>
+    </div>
+}
+else if (submitted)
+{
+    <div class="registration-card">
+        <h3>Registration Complete</h3>
+        <p>Thank you for registering, @registration.Name!</p>
+        <a href="/events" class="btn btn-secondary" style="margin-top:1rem;">Back to Events</a>
+    </div>
+}
+else
+{
+    <div class="registration-card">
+        <h3>Event Not Found</h3>
+        <p>The event you are trying to register for does not exist. <a href="/events">Back to Events</a></p>
+    </div>
+}

@@ -1,0 +1,24 @@
+﻿@inherits LayoutComponentBase
+
+<!--
+    Main layout for EventEase.
+    Contains the sidebar navigation and main content area.
+-->
+<div class="page">
+    <!-- Sidebar with navigation menu -->
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <!-- Optional top row for header or spacing -->
+        <div class="top-row px-4">
+            @* Add header content here if needed *@
+        </div>
+
+        <!-- Main content rendered here -->
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
