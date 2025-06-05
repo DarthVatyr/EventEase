@@ -1,0 +1,2 @@
+# EventEase
+Blazor Event App
